@@ -40,4 +40,4 @@ def summoner_information(summoner_name):
 
 
 # test()
-summoner_information('Rârgh')
+# summoner_information('Rârgh')

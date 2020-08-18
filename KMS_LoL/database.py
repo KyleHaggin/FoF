@@ -2,6 +2,7 @@ import psycopg2 as ps
 import os
 import pandas as pd
 import json
+import sqlite3 as sq
 
 
 def get_credentials():
@@ -15,7 +16,24 @@ def get_credentials():
     }
 
 
-def get_conn():
+# Function to get credentials and connect to sql database on AWS RDS.
+# Currently not in use due to AWS RDS costs.
+def get_conn_aws():
     conn = ps.connect(**get_credentials())
     cursor = conn.cursor()
     return conn, cursor
+
+
+# Connect to local sqlite3 database
+def get_conn_sqlite():
+    conn = sq.connect('KMS_LoL.db')
+    cursor = conn.cursor()
+    return conn, cursor
+
+
+# Create database, currently supports sqlite3
+def create_database():
+    # Get connection and cursor
+    conn, c = get_conn_sqlite()
+
+    c.execute('''CREATE TABLE summoner''')

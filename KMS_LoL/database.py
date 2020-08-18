@@ -93,11 +93,14 @@ def insert_summoner_information(summoner_name):
     (summoner_name, summoner_id, solo_rank_tier, solo_rank_rank)
     VALUES (%s, %s, %s, %s)"""
 
-    c.execute(insert_summoner_info, insert_info)
-
-    # Close cursor and commit connection
-    c.close()
-    conn.commit()
+    try:
+        c.execute(insert_summoner_info, insert_info)
+    except Error as e:
+        print(e)
+    finally:
+        # Close cursor and commit connection
+        c.close()
+        conn.commit()
 
 
 # Execute database creation and summoner information insert if file is run.

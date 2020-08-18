@@ -22,9 +22,6 @@ def get_credentials():
 def get_conn():
     # Get credentials from .env
     credentials = get_credentials()
-    # Print credentials for testing purposes
-    print(credentials['dbname'], credentials['user'],
-          credentials['password'], credentials['host'])
 
     # Try/Except to connect to database, throw error if failed.
     try:
@@ -76,7 +73,6 @@ def create_database():
 
     # Execute and print results of table lookup.
     c.execute(show_tables)
-    print(c.fetchall())
 
     # Close cursor and commit connection
     c.close()
@@ -104,5 +100,7 @@ def insert_summoner_information(summoner_name):
     conn.commit()
 
 
-create_database()
-insert_summoner_information('Rârgh')
+# Execute database creation and summoner information insert if file is run.
+if __name__ == "__main__":
+    create_database()
+    insert_summoner_information('Rârgh')

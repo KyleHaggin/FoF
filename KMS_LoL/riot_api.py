@@ -30,16 +30,10 @@ def summoner_information(summoner_name):
     summoner = watcher.summoner.by_name(region, summoner_name)
     summoner_ranked = watcher.league.by_summoner(region, summoner['id'])
 
-    # Print information to command line
-    print(summoner)
-    print(' ')
-    print(summoner_ranked)
-    print(' ')
-    print(summoner_ranked[1]['tier'])
-
     # Return the json responce from API
     return summoner, summoner_ranked
 
 
-# test()
-# summoner_information('Rârgh')
+# Run tests if this file is run directly.
+if __name__ == "__main__":
+    test()

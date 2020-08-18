@@ -26,11 +26,16 @@ def get_conn():
     print(credentials['dbname'], credentials['user'],
           credentials['password'], credentials['host'])
 
-    # Connect to database
-    conn = ps.connect(dbname=credentials['dbname'], user=credentials['user'],
-                      password=credentials['password'],
-                      host=credentials['host'])
-    cursor = conn.cursor()
+    # Try/Except to connect to database, throw error if failed.
+    try:
+        # Connect to database
+        conn = ps.connect(dbname=credentials['dbname'],
+                          user=credentials['user'],
+                          password=credentials['password'],
+                          host=credentials['host'])
+        cursor = conn.cursor()
+    except Error as e:
+        print(e)
 
     # Return connection and cursor
     return conn, cursor
@@ -78,4 +83,26 @@ def create_database():
     conn.commit()
 
 
+def insert_summoner_information(summoner_name):
+    # Get connection and cursor
+    conn, c = get_conn()
+
+    summoner, summoner_ranked = riot_api.summoner_information(summoner_name)
+
+    insert_info = (summoner['name'], summoner['id'],
+                   summoner_ranked[1]['tier'], summoner_ranked[1]['rank'])
+
+    insert_summoner_info = """
+    INSERT INTO summoner
+    (summoner_name, summoner_id, solo_rank_tier, solo_rank_rank)
+    VALUES (%s, %s, %s, %s)"""
+
+    c.execute(insert_summoner_info, insert_info)
+
+    # Close cursor and commit connection
+    c.close()
+    conn.commit()
+
+
 create_database()
+insert_summoner_information('Rârgh')

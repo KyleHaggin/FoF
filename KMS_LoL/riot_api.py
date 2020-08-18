@@ -34,6 +34,8 @@ def summoner_information(summoner_name):
     print(summoner)
     print(' ')
     print(summoner_ranked)
+    print(' ')
+    print(summoner_ranked[1]['tier'])
 
     # Return the json responce from API
     return summoner, summoner_ranked

@@ -1,2 +1,2 @@
-# 
+# Ignore the enviornment file. Most of the access keys and other sensitive information should be loaded from the .env
 .env

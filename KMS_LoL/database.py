@@ -129,7 +129,7 @@ def read_summoner_information(summoner_name):
     print(info_recieved)
 
 
-# Execute database creation and summoner information insert if file is run.
+# Execute test code if file is run
 if __name__ == "__main__":
     create_database()
     insert_summoner_information('Rârgh')

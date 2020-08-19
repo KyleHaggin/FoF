@@ -17,8 +17,7 @@ def get_credentials():
     }
 
 
-# Function to get credentials and connect to sql database on AWS RDS.
-# Currently not in use due to AWS RDS costs.
+# Function to get credentials and connect to sql database on ElephantSQL.
 def get_conn():
     # Get credentials from .env
     credentials = get_credentials()
@@ -45,7 +44,7 @@ def get_conn_sqlite():
     return conn, cursor
 
 
-# Create database, currently supports sqlite3
+# Create database, currently supports ElephantSQL
 def create_database():
     # Get connection and cursor
     conn, c = get_conn()
@@ -101,6 +100,10 @@ def insert_summoner_information(summoner_name):
         # Close cursor and commit connection
         c.close()
         conn.commit()
+
+
+def read_summoner_information(summoner_name):
+    conn, c = get_conn()
 
 
 # Execute database creation and summoner information insert if file is run.

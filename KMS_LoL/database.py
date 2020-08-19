@@ -84,10 +84,18 @@ def insert_summoner_information(summoner_name):
     # Get connection and cursor
     conn, c = get_conn()
 
+    # Get summoner infor
     summoner, summoner_ranked = riot_api.summoner_information(summoner_name)
 
-    insert_info = (summoner['name'], summoner['id'],
-                   summoner_ranked[1]['tier'], summoner_ranked[1]['rank'])
+    # Check where the ranked solo queue info is
+    if summoner_ranked[0]['queueType'] == 'RANKED_SOLO_5x5':
+        insert_info = (summoner['name'], summoner['id'],
+                       summoner_ranked[0]['tier'], summoner_ranked[0]['rank'])
+    elif summoner_ranked[1]['queueType'] == 'RANKED_SOLO_5x5':
+        insert_info = (summoner['name'], summoner['id'],
+                       summoner_ranked[1]['tier'], summoner_ranked[1]['rank'])
+    else:
+        print('Player is currently not solo queue ranked.')
 
     # Insert into table summoner unless summoner already exists.
     # If already exists, update information instead.
@@ -99,9 +107,8 @@ def insert_summoner_information(summoner_name):
     DO UPDATE SET
     solo_rank_tier = '{2}',
     solo_rank_rank = '{3}';
-    """.format(str(summoner['name']), str(summoner['id']),
-               str(summoner_ranked[1]['tier']),
-               str(summoner_ranked[1]['rank']))
+    """.format(str(insert_info[0]), str(insert_info[1]),
+               str(insert_info[2]), str(insert_info[3]))
 
     try:
         c.execute(insert_summoner_info)
@@ -126,11 +133,28 @@ def read_summoner_information(summoner_name):
 
     info_recieved = c.fetchall()
 
-    print(info_recieved)
+    # CLose the connection
+    c.close()
+    conn.commit()
+
+    return info_recieved
 
 
-# Execute database creation and summoner information insert if file is run.
+# Checks database for the summoner's information, if does not exist than pull
+# from RIOT API for the information.
+def read_write_summoner_info(summoner_name):
+    # Pull data from SQL database
+    info_recieved = read_summoner_information(summoner_name)
+
+    if not info_recieved:
+        insert_summoner_information(summoner_name)
+
+        return read_summoner_information(summoner_name)
+    else:
+        return info_recieved
+
+
+# Execute test code if file is run
 if __name__ == "__main__":
     create_database()
-    insert_summoner_information('Rârgh')
-    read_summoner_information('Rârgh')
+    print(read_write_summoner_info('OnceWeak'))

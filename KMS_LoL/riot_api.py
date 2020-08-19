@@ -16,7 +16,7 @@ default_region = 'na1'
 def test():
     # Create summoner information to test with. Julz in this case.
     test_summoner = watcher.summoner.by_name(
-        default_region, 'Rârgh'
+        default_region, 'OnceWeak'
         )
     test_ranked_stats = watcher.league.by_summoner(
         default_region, test_summoner['id']

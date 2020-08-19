@@ -103,10 +103,30 @@ def insert_summoner_information(summoner_name):
 
 
 def read_summoner_information(summoner_name):
+    get_summoner_info = """
+    SELECT * FROM summoner WHERE summoner_name='{}'
+    """.format(str(summoner_name))
+
+    # try:
+    # Get connection and cursor
     conn, c = get_conn()
+
+    # Execute select request from SQL database.
+    c.execute(get_summoner_info)
+
+    info_recieved = c.fetchall()
+
+    print(info_recieved)
+    # except Error as e:
+    #     print(e)
+    # finally:
+    #     # Close cursor and commit connection
+    #     c.close()
+    #     conn.commit()
 
 
 # Execute database creation and summoner information insert if file is run.
 if __name__ == "__main__":
     create_database()
     insert_summoner_information('Rârgh')
+    read_summoner_information('Rârgh')

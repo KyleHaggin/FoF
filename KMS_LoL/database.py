@@ -17,8 +17,7 @@ def get_credentials():
     }
 
 
-# Function to get credentials and connect to sql database on AWS RDS.
-# Currently not in use due to AWS RDS costs.
+# Function to get credentials and connect to sql database on ElephantSQL.
 def get_conn():
     # Get credentials from .env
     credentials = get_credentials()
@@ -45,7 +44,7 @@ def get_conn_sqlite():
     return conn, cursor
 
 
-# Create database, currently supports sqlite3
+# Create database, currently supports ElephantSQL
 def create_database():
     # Get connection and cursor
     conn, c = get_conn()
@@ -53,8 +52,8 @@ def create_database():
     # Create table for summoner information if it doesn't already exist.
     create_table_summoner = """
     CREATE TABLE IF NOT EXISTS summoner (
-        summoner_name VARCHAR(16),
-        summoner_id VARCHAR(48),
+        summoner_name VARCHAR(16) UNIQUE,
+        summoner_id VARCHAR(48) UNIQUE,
         solo_rank_tier VARCHAR(16),
         solo_rank_rank VARCHAR(8)
     );
@@ -79,6 +78,8 @@ def create_database():
     conn.commit()
 
 
+# Insert information for a summoner into the database
+# based on the summoner name.
 def insert_summoner_information(summoner_name):
     # Get connection and cursor
     conn, c = get_conn()
@@ -88,13 +89,22 @@ def insert_summoner_information(summoner_name):
     insert_info = (summoner['name'], summoner['id'],
                    summoner_ranked[1]['tier'], summoner_ranked[1]['rank'])
 
+    # Insert into table summoner unless summoner already exists.
+    # If already exists, update information instead.
     insert_summoner_info = """
     INSERT INTO summoner
     (summoner_name, summoner_id, solo_rank_tier, solo_rank_rank)
-    VALUES (%s, %s, %s, %s)"""
+    VALUES ('{0}', '{1}', '{2}', '{3}')
+    ON CONFLICT (summoner_name)
+    DO UPDATE SET
+    solo_rank_tier = '{2}',
+    solo_rank_rank = '{3}';
+    """.format(str(summoner['name']), str(summoner['id']),
+               str(summoner_ranked[1]['tier']),
+               str(summoner_ranked[1]['rank']))
 
     try:
-        c.execute(insert_summoner_info, insert_info)
+        c.execute(insert_summoner_info)
     except Error as e:
         print(e)
     finally:
@@ -103,7 +113,24 @@ def insert_summoner_information(summoner_name):
         conn.commit()
 
 
+# Read the summoner information from the SQL database based on summoner name
+def read_summoner_information(summoner_name):
+    get_summoner_info = """
+    SELECT * FROM summoner WHERE summoner_name='{}'
+    """.format(str(summoner_name))
+
+    conn, c = get_conn()
+
+    # Execute select request from SQL database.
+    c.execute(get_summoner_info)
+
+    info_recieved = c.fetchall()
+
+    print(info_recieved)
+
+
 # Execute database creation and summoner information insert if file is run.
 if __name__ == "__main__":
     create_database()
     insert_summoner_information('Rârgh')
+    read_summoner_information('Rârgh')

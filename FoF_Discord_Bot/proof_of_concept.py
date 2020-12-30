@@ -54,17 +54,55 @@ async def ping(ctx):
 @client.command(name='Summoner Info', aliases=['summoner'])
 async def summoner_info(ctx, summoner_name):
 
-    summoner, summoner_ranked = riot_api.summoner_information(summoner_name)
+    # Initialize the variables
+    summoner_info_clean = None
+    summoner = None
+    summoner_ranked = None
+    # Pull summoner informatin from riot_api. Raise exception if API is offline
+    try:
+        summoner, summoner_ranked = riot_api.summoner_information(
+            summoner_name)
+        print('Summoner:', summoner)
+        print('Summoner_ranked: ', summoner_ranked)
+    except Exception:
+        print('API offline.')
+        await ctx.send('Something went wrong with the API. '
+                       'Please inform an admin of this.')
 
-    if summoner_ranked[0]['queueType'] == 'RANKED_SOLO_5x5':
-        summoner_info_clean = (summoner['name'], summoner_ranked[0]['tier'],
-                               summoner_ranked[0]['rank'])
-    elif summoner_ranked[1]['queueType'] == 'RANKED_SOLO_5x5':
-        summoner_info_clean = (summoner['name'], summoner_ranked[1]['tier'],
-                               summoner_ranked[1]['rank'])
+    # Find summoner rank from the info provided by the api.
+    # If no rank exists keep summoner_info_clean as None.
+    try:
+        if summoner_ranked[0]['queueType'] == 'RANKED_SOLO_5x5':
+            summoner_info_clean = (
+                summoner['name'], summoner_ranked[0]['tier'],
+                summoner_ranked[0]['rank']
+                )
+        elif summoner_ranked[1]['queueType'] == 'RANKED_SOLO_5x5':
+            summoner_info_clean = (
+                summoner['name'], summoner_ranked[1]['tier'],
+                summoner_ranked[1]['rank']
+                )
+    except Exception:
+        pass
 
-    # summoner_info_clean = read_write_summoner_info(summoner_name)
-    await ctx.send(summoner_info_clean)
-    # await ctx.send(summoner_information(summoner_name))
+    # If there is information in summoner,
+    # that means the API was successful and something
+    # should be posted to Discord.
+    if summoner is not None:
+        # If there is clean info, than there is a rank assocciated
+        # with the Summoner. Post that rank to Discord.
+        if summoner_info_clean is not None:
+            await ctx.send(
+                '{0} currently has the solo queue rank of {1} {2}'.format(
+                    summoner_info_clean[0], summoner_info_clean[1],
+                    summoner_info_clean[2]
+                    ))
+        # If there is no clean info, there is no rank assocciated
+        # with the summoner. Post as such.
+        else:
+            await ctx.send(
+                '{0} currently does not have a solo queue rank.'.format(
+                    summoner_name)
+                    )
 
 client.run(token)

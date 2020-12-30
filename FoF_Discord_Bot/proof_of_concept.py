@@ -1,7 +1,13 @@
+import sys
 import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
+
+# imports from other directories
+sys.path.append('.')
+from FoF_LoL.riot_api import summoner_information
+# from projects.FoF_LoL import riot_api
 
 # Load .env
 load_dotenv(verbose=True)
@@ -31,6 +37,9 @@ async def on_message(message):
     if message.content.startswith('Hello'):
         await message.channel.send('Hello!')
 
+    # Passes messages to command processing.
+    # Without this processing messages with commands will not be read.
+    # This must always go after any message content parsing.
     await client.process_commands(message)
 
 # Proof of concept discord command.
@@ -38,5 +47,11 @@ async def on_message(message):
 async def ping(ctx):
     print('Ping check.')
     await ctx.send(f'This bot\'s ping is {round(client.latency * 1000)}ms.')
+
+
+@client.command(name='Summoner Info', aliases=['summoner'])
+async def summoner_info(ctx, summoner_name):
+    print(ctx, summoner_name)
+    await ctx.send(summoner_information(summoner_name))
 
 client.run(token)

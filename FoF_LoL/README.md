@@ -1,7 +1,7 @@
-# Koshi Mid-Seasonal League of Legends
+# Friend or Foe League of Legends
 
 ## Codebase aim
-Current aims of this codebase are to collect and provide statistics for the matches and players of KMS LoL.
+Current aims of this codebase are to collect and provide statistics for the matches and players of FoF LoL.
 
 ## Current Features
 - Basic connection to the RIOT API to access player data.

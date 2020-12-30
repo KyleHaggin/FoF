@@ -31,6 +31,9 @@ async def on_message(message):
     if message.content.startswith('Hello'):
         await message.channel.send('Hello!')
 
+    # Passes messages to command processing.
+    # Without this processing messages with commands will not be read.
+    # This must always go after any message content parsing.
     await client.process_commands(message)
 
 # Proof of concept discord command.

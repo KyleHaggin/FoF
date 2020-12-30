@@ -31,4 +31,12 @@ async def on_message(message):
     if message.content.startswith('Hello'):
         await message.channel.send('Hello!')
 
+    await client.process_commands(message)
+
+# Proof of concept discord command.
+@client.command(name='Ping', aliases=['ping'])
+async def ping(ctx):
+    print('Ping check.')
+    await ctx.send(f'This bot\'s ping is {round(client.latency * 1000)}ms.')
+
 client.run(token)

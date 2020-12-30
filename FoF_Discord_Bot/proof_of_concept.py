@@ -6,8 +6,10 @@ from dotenv import load_dotenv
 
 # imports from other directories
 sys.path.append('.')
-from FoF_LoL.riot_api import summoner_information
-# from projects.FoF_LoL import riot_api
+# from FoF_LoL.riot_api import summoner_information
+from FoF_LoL import database
+from FoF_LoL.database import read_write_summoner_info
+from FoF_LoL import riot_api
 
 # Load .env
 load_dotenv(verbose=True)
@@ -51,7 +53,18 @@ async def ping(ctx):
 
 @client.command(name='Summoner Info', aliases=['summoner'])
 async def summoner_info(ctx, summoner_name):
-    print(ctx, summoner_name)
-    await ctx.send(summoner_information(summoner_name))
+
+    summoner, summoner_ranked = riot_api.summoner_information(summoner_name)
+
+    if summoner_ranked[0]['queueType'] == 'RANKED_SOLO_5x5':
+        summoner_info_clean = (summoner['name'], summoner_ranked[0]['tier'],
+                               summoner_ranked[0]['rank'])
+    elif summoner_ranked[1]['queueType'] == 'RANKED_SOLO_5x5':
+        summoner_info_clean = (summoner['name'], summoner_ranked[1]['tier'],
+                               summoner_ranked[1]['rank'])
+
+    # summoner_info_clean = read_write_summoner_info(summoner_name)
+    await ctx.send(summoner_info_clean)
+    # await ctx.send(summoner_information(summoner_name))
 
 client.run(token)

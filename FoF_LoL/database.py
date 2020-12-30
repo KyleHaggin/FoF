@@ -3,7 +3,7 @@ import os
 import pandas as pd
 import json
 import sqlite3 as sq
-import riot_api
+from FoF_LoL import riot_api
 
 
 def get_credentials():

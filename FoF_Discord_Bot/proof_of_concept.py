@@ -3,6 +3,7 @@ import discord
 from discord.ext import commands
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 # imports from other directories
 sys.path.append('.')
@@ -97,6 +98,8 @@ async def summoner_info(ctx, summoner_name):
                     summoner_info_clean[0], summoner_info_clean[1],
                     summoner_info_clean[2]
                     ))
+            
+
         # If there is no clean info, there is no rank assocciated
         # with the summoner. Post as such.
         else:

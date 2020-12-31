@@ -98,7 +98,12 @@ async def summoner_info(ctx, summoner_name):
                     summoner_info_clean[0], summoner_info_clean[1],
                     summoner_info_clean[2]
                     ))
-            
+            folder_path = Path('FoF_LoL').resolve()
+            print(folder_path)
+            emblem_path = str(folder_path) + '\\ranked_emblems\\{0}.png'.format(summoner_info_clean[1])
+            await ctx.send(
+                file=discord.File(emblem_path)
+                )
 
         # If there is no clean info, there is no rank assocciated
         # with the summoner. Post as such.

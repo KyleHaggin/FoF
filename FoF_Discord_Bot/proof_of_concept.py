@@ -99,8 +99,8 @@ async def summoner_info(ctx, summoner_name):
                     summoner_info_clean[2]
                     ))
             folder_path = Path('FoF_LoL').resolve()
-            print(folder_path)
-            emblem_path = str(folder_path) + '\\ranked_emblems\\{0}.png'.format(summoner_info_clean[1])
+            emblem_path = '{0}\\ranked_emblems\\{1}.png'.format(
+                                str(folder_path), summoner_info_clean[1])
             await ctx.send(
                 file=discord.File(emblem_path)
                 )

@@ -50,35 +50,69 @@ async def on_message(message):
 
 
 # Call "help" to get details of different functions.
-@client.command(name='Help', aliases=['command_help', 'h'])
-async def command_help(ctx, command):
+@client.command(name='Help', aliases=[
+    'command_help', 'h', 'helper', 'command help'
+    ])
+async def command_help(ctx, *command):
+
+    # Convert tuple to string.
+    command = ''.join(command)
     command.lower()
+
+    # List of possible commands
+    commands = ['ping', 'summoner rank', 'convert time', 'command help']
+
+    if command is '':
+        await ctx.send(
+                       'Current commands: \n'
+        )
+        for c in commands:
+            await ctx.send(str(c) + '\n')
+        return None
+
     # Commands with a list of possible aliases.
     ping = ['ping']
     summoner = ['summoner', 'Summoner Info']
     convert = ['convert', 'convert_time', 'convert time']
+    helper = ['h', 'help', 'helper', 'command help', 'command_help']
 
     # Print string with the command format and expected results of each command
     if command in ping:
-        await ctx.send('Command format: !ping \n'
+        await ctx.send(
+                       'Ping command. \n'
+                       'Command format: !ping \n'
                        'Expected result: Ping in milliseconds.'
                        )
     elif command in summoner:
-        await ctx.send('Command format: !summoner \\*\"summoner name\"\\* \n'
+        await ctx.send(
+                       'Summoner rank command. \n'
+                       'Command format: !summoner \\*\"summoner name\"\\* \n'
                        'Expected result: '
                        '\\*Summoner name\\* currently has the '
                        'solo queue rank of \\*summoner\'s rank\\*'
                        )
     elif command in convert:
-        await ctx.send('Command format: !convert '
+        await ctx.send(
+                       'Convert time command. \n'
+                       'Command format: !convert '
                        '\\*time\\* or \\*\"datetime\"\\* '
                        '\\*timezone to convert to\\* \\*timezone to convert '
                        'from (default PST)\\* \n'
                        'Expected result: \\*converted datetime\\*'
                        )
+    elif command in helper:
+        await ctx.send(
+                       'Help command. \n'
+                       'Command format: !h \\*command name\\* \n'
+                       'Expected result: \\*Command name. Command call format.'
+                       ' Command\'s expected result\\*'
+        )
     else:
-        await ctx.send('Unrecognized command. If you believe this is an error '
-                       'please contact FoF admins.')
+        await ctx.send(
+                       '{0} is currently not a command.'
+                       'If you believe this is an error, '
+                       'contact a FoF admin.'.format(command)
+        )
 
 
 # Proof of concept discord command.

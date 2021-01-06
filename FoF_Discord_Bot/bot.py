@@ -4,6 +4,9 @@ from discord.ext import commands
 import os
 from dotenv import load_dotenv
 from pathlib import Path
+from datetime import datetime
+from dateutil.parser import parse
+import pytz
 
 # imports from other directories
 sys.path.append('.')
@@ -49,19 +52,29 @@ async def on_message(message):
 # Call "help" to get details of different functions.
 @client.command(name='Help', aliases=['command_help', 'h'])
 async def command_help(ctx, command):
+    command.lower()
     # Commands with a list of possible aliases.
-    ping = ['Ping', 'ping']
-    summoner = ['Summoner', 'summoner', 'Summoner Info']
+    ping = ['ping']
+    summoner = ['summoner', 'Summoner Info']
+    convert = ['convert', 'convert_time', 'convert time']
 
-    # The help that the commands provide,
+    # Print string with the command format and expected results of each command
     if command in ping:
         await ctx.send('Command format: !ping \n'
                        'Expected result: Ping in milliseconds.'
                        )
     elif command in summoner:
-        await ctx.send('Command format: !summoner \'*summoner name*\' \n'
-                       'Expected result: *Summoner name* currently has the '
-                       'solo queue rank of *summoner\'s rank*'
+        await ctx.send('Command format: !summoner \\*\"summoner name\"\\* \n'
+                       'Expected result: '
+                       '\\*Summoner name\\* currently has the '
+                       'solo queue rank of \\*summoner\'s rank\\*'
+                       )
+    elif command in convert:
+        await ctx.send('Command format: !convert '
+                       '\\*time\\* or \\*\"datetime\"\\* '
+                       '\\*timezone to convert to\\* \\*timezone to convert '
+                       'from (default PST)\\* \n'
+                       'Expected result: \\*converted datetime\\*'
                        )
     else:
         await ctx.send('Unrecognized command. If you believe this is an error '
@@ -137,5 +150,56 @@ async def summoner_info(ctx, summoner_name):
                     summoner_name)
                     )
 
+
+# Take summoner name and display their rank and rank emblem.
+@client.command(name='Convert Time', aliases=['convert', 'convert_time'])
+async def convert_time(ctx, original_time, convert_to, convert_from='pst'):
+
+    # Convert timezone string to lowercase
+    convert_to.lower()
+    convert_from.lower()
+
+    # Timezones and aliases
+    pst = ['pst', 'pacific']
+    est = ['est', 'eastern']
+    cst = ['cst', 'central']
+    mst = ['mst', 'mountain']
+    hst = ['hst', 'hawaii']
+
+    # Original timezone
+    if convert_from in pst:
+        con_from = pytz.timezone('US/Pacific')
+    elif convert_from in est:
+        con_from = pytz.timezone('US/Eastern')
+    elif convert_from in cst:
+        con_from = pytz.timezone('US/Central')
+    elif convert_from in mst:
+        con_from = pytz.timezone('US/Mountain')
+    elif convert_from in hst:
+        con_from = pytz.timezone('US/Hawaii')
+
+    # Convert timezone
+    if convert_to in pst:
+        con_to = pytz.timezone('US/Pacific')
+    elif convert_to in est:
+        con_to = pytz.timezone('US/Eastern')
+    elif convert_to in cst:
+        con_to = pytz.timezone('US/Central')
+    elif convert_to in mst:
+        con_to = pytz.timezone('US/Mountain')
+    elif convert_to in hst:
+        con_to = pytz.timezone('US/Hawaii')
+
+    # Parse timezone
+    date = parse(original_time)
+
+    # Convert to UTC standard
+    date_from = con_from.localize(date)
+    date_utc = date_from.astimezone(pytz.utc)
+
+    # Convert to wanted timezone
+    date_final = date_utc.astimezone(con_to)
+
+    await ctx.send(str(date_final.date()) + ' ' + str(date_final.time()))
 
 client.run(token)

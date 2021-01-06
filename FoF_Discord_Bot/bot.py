@@ -45,6 +45,29 @@ async def on_message(message):
     # This must always go after any message content parsing.
     await client.process_commands(message)
 
+
+# Call "help" to get details of different functions.
+@client.command(name='Help', aliases=['command_help', 'h'])
+async def command_help(ctx, command):
+    # Commands with a list of possible aliases.
+    ping = ['Ping', 'ping']
+    summoner = ['Summoner', 'summoner', 'Summoner Info']
+
+    # The help that the commands provide,
+    if command in ping:
+        await ctx.send('Command format: !ping \n'
+                       'Expected result: Ping in milliseconds.'
+                       )
+    elif command in summoner:
+        await ctx.send('Command format: !summoner \'*summoner name*\' \n'
+                       'Expected result: *Summoner name* currently has the '
+                       'solo queue rank of *summoner\'s rank*'
+                       )
+    else:
+        await ctx.send('Unrecognized command. If you believe this is an error '
+                       'please contact FoF admins.')
+
+
 # Proof of concept discord command.
 @client.command(name='Ping', aliases=['ping'])
 async def ping(ctx):
@@ -52,6 +75,7 @@ async def ping(ctx):
     await ctx.send(f'This bot\'s ping is {round(client.latency * 1000)}ms.')
 
 
+# Take summoner name and display their rank and rank emblem.
 @client.command(name='Summoner Info', aliases=['summoner'])
 async def summoner_info(ctx, summoner_name):
 
@@ -112,5 +136,6 @@ async def summoner_info(ctx, summoner_name):
                 '{0} currently does not have a solo queue rank.'.format(
                     summoner_name)
                     )
+
 
 client.run(token)

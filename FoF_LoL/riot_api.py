@@ -2,6 +2,7 @@ import os
 import riotwatcher as rw
 import pandas as pd
 from dotenv import load_dotenv
+import cassiopeia as cass
 
 # Load .env
 load_dotenv(verbose=True)

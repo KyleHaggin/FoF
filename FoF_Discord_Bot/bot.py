@@ -7,6 +7,7 @@ from pathlib import Path
 from datetime import datetime
 from dateutil.parser import parse
 import pytz
+import requests
 
 # imports from other directories
 sys.path.append('.')
@@ -235,5 +236,13 @@ async def convert_time(ctx, original_time, convert_to, convert_from='pst'):
     date_final = date_utc.astimezone(con_to)
 
     await ctx.send(str(date_final.date()) + ' ' + str(date_final.time()))
+
+
+# Joke command
+@client.command(name='catgirl', aliases=[' catgirl', 'faeles', 'Faeles'])
+async def catgirl(ctx):
+    response = requests.get('https://nekos.life/api/neko')
+    image_link = response.json()
+    await ctx.send(f'{image_link["neko"]}')
 
 client.run(token)

@@ -239,7 +239,10 @@ async def convert_time(ctx, original_time, convert_to, convert_from='pst'):
 
 
 # Joke command
-@client.command(name='catgirl', aliases=[' catgirl', 'faeles', 'Faeles'])
+@client.command(
+    name='catgirl',
+    aliases=[' catgirl', 'faeles', 'Faeles', 'fae']
+    )
 async def catgirl(ctx):
     response = requests.get('https://nekos.life/api/neko')
     image_link = response.json()

@@ -21,9 +21,9 @@ connector = lcu.Connector()
 
 """
 
-@connector.ready
-async def connect(connection):
-    print('LCU API ready.')
+# @connector.ready
+# async def connect(connection):
+#     print('LCU API ready.')
 
 # @connector.ready
 # async def connect(connection):
@@ -47,8 +47,8 @@ async def connect(connection):
 #     print(event.data)
 
 
-# @connector.close
-# async def disconnect(connection):
-#     print('LCU API disconnected')
+@connector.close
+async def disconnect(connection):
+    print('LCU API disconnected')
 
 connector.start()

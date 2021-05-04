@@ -16,11 +16,6 @@ default_region = 'na1'
 connector = lcu.Connector()
 
 
-
-"""
-
-"""
-
 # @connector.ready
 # async def connect(connection):
 #     print('LCU API ready.')

@@ -30,6 +30,9 @@ client = commands.Bot(command_prefix='!')
 # On ready event (brings bot online in the server)
 @client.event
 async def on_ready():
+    # Reint global variables
+    global catgirl_count
+    catgirl_count = 0
     print('Bot is Ready')
 
 
@@ -239,10 +242,29 @@ async def convert_time(ctx, original_time, convert_to, convert_from='pst'):
 
 
 # Joke command
-@client.command(name='catgirl', aliases=[' catgirl', 'faeles', 'Faeles'])
+@client.command(
+    name='catgirl',
+    aliases=[' catgirl', 'faeles', 'Faeles', 'fae', 'Catgirl']
+    )
 async def catgirl(ctx):
     response = requests.get('https://nekos.life/api/neko')
     image_link = response.json()
     await ctx.send(f'{image_link["neko"]}')
+    global catgirl_count
+    catgirl_count += 1
+
+
+# Joke command.
+@client.command(
+    name='catgirlcount', aliases=[
+        'faelescount', 'faecount', 'Faelescount',
+        'faelescounter', 'Faelescounter'
+        ]
+    )
+async def catgirlcount(ctx):
+    global catgirl_count
+    await ctx.send(
+        f'There have been {catgirl_count} catgirls since bot restart.'
+        )
 
 client.run(token)
